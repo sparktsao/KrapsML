@@ -46,6 +46,8 @@ class RandomCat:
         import random
         r = [random.randint(0,1) for x in testdata]
         return np.asarray(r)
+    def predict_proba(self,testdata):
+        return self.predict(testdata)
     def to_json(self):
         return "meow"
     def save_weights(self,a,overwrite=True):
@@ -60,15 +62,15 @@ def TrainAndValidation1(X_train,y_train,X_test,y_test,bEarlyStopByTestData=True)
     model.fit(X_train,y_train.ravel())
     if not X_test is None:
         predicted = model.predict(X_test)
-        v_precision,v_recall,TP, FP, TN, FN = sparkcore.MyEvaluation(y_test,predicted)
-        return 0,0,v_precision,v_recall,TP, FP, TN, FN, model
+        v_precision,v_recall,TP, FP, TN, FN,thelogloss = sparkcore.MyEvaluation(y_test,predicted)
+        return 0,0,v_precision,v_recall,TP, FP, TN, FN,thelogloss, model
     else:
-        return 0,0,0,0,0,0,0,0, model
+        return 0,0,0,0,0,0,0,0,0, model
 
 
 if  __name__ == '__main__':    
     bMulticlass = False
-    logdata = sparkcore.ExpFunc(path1,TrainAndValidation1,bMulticlass,dropcolumns)
+    logdata = sparkcore.ExpFunc(path1,TrainAndValidation1)
     #============================================================================================    
     logdata.logModel = ("")
     #============================================================================================
